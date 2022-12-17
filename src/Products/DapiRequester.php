@@ -46,7 +46,14 @@ class DapiRequester
       $url = $this->API_BASE_URL . $endpoint;
     }
 
-    $response = $this->guzzleClient->post($url, ['headers' => $headers, 'body' => json_encode($body)]);
-    return json_decode($response->getBody(), true);
+    try {
+        $response = $this->guzzleClient->post($url, ['headers' => $headers, 'body' => json_encode($body)]);
+        return json_decode($response->getBody(), true);
+    }
+    catch (RequestException $e) {
+    
+        $response = $e->getResponse();
+        return json_decode($response->getBody(), true);
+    }
   }
 }
